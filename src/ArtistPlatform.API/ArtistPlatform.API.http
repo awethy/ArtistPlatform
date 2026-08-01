@@ -1,0 +1,6 @@
+@ArtistPlatform.API_HostAddress = http://localhost:5117
+
+GET {{ArtistPlatform.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
