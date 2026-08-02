@@ -8,7 +8,7 @@ namespace ArtistPlatform.Application.Interfaces
         Task<List<ArtistResponse>> GetAllAsync();
         Task<ArtistResponse> GetArtistByIdAsync(Guid id);
         Task<ArtistResponse> CreateArtistAsync(CreateArtistRequest artist);
-        Task<ArtistResponse> UpdateArtistAsync(UpdateArtistRequest artist);
+        Task<ArtistResponse> UpdateArtistAsync(Guid id, UpdateArtistRequest artist);
         Task DeleteArtistAsync(Guid id);
     }
 }

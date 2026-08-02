@@ -31,9 +31,9 @@ namespace ArtistPlatform.Application.Services
             };
         }
 
-        public Task DeleteArtistAsync(Guid id)
+        public async Task DeleteArtistAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _artistRepository.DeleteAsync(id);
         }
 
         public async Task<List<ArtistResponse>> GetAllAsync()
@@ -65,9 +65,25 @@ namespace ArtistPlatform.Application.Services
             };
         }
 
-        public Task<ArtistResponse> UpdateArtistAsync(UpdateArtistRequest request)
+        public async Task<ArtistResponse> UpdateArtistAsync(Guid id, UpdateArtistRequest request)
         {
-            throw new NotImplementedException();
+            var artist = await _artistRepository.GetByIdAsync(id);
+            if (artist == null)
+            {
+                throw new KeyNotFoundException($"Artist with id {id} not found.");
+            }
+
+            artist.Update(request.Name, request.Bio);
+
+            await _artistRepository.UpdateAsync(artist);
+
+            return new ArtistResponse
+            {
+                Id = artist.Id,
+                Name = artist.Name,
+                Bio = artist.Bio,
+                CreatedAt = artist.CreatedAt
+            };
         }
     }
 }
