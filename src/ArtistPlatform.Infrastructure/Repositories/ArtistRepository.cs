@@ -1,33 +1,46 @@
 ﻿using ArtistPlatform.Domain.Entities;
 using ArtistPlatform.Domain.Interfaces;
+using ArtistPlatform.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArtistPlatform.Infrastructure.Repositories
 {
     public class ArtistRepository : IArtistRepository
     {
-        public Task AddAsync(Artist artist)
+        private readonly ApplicationDbContext _context;
+
+        public ArtistRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task AddAsync(Artist artist)
         {
-            throw new NotImplementedException();
+            await _context.Artists.AddAsync(artist);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<List<Artist>> GetAllAsync()
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var artist = await _context.Artists.FindAsync(id);
+                _context.Artists.Remove(artist);
+                await _context.SaveChangesAsync();
         }
 
-        public Task<Artist?> GetByIdAsync(Guid id)
+        public async Task<List<Artist>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Artists.ToListAsync();
         }
 
-        public Task UpdateAsync(Artist artist)
+        public async Task<Artist?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Artists.FindAsync(id);
+        }
+
+        public async Task UpdateAsync(Artist artist)
+        {
+            _context.Artists.Update(artist);
+            await _context.SaveChangesAsync();
         }
     }
 }
