@@ -28,6 +28,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 builder.Services.AddScoped<IArtistService, ArtistService>();
 
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
+
+builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+builder.Services.AddScoped<ITrackService, TrackService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
