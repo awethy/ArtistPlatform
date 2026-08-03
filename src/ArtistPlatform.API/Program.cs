@@ -5,12 +5,29 @@ using ArtistPlatform.Infrastructure.Persistence;
 using ArtistPlatform.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using ArtistPlatform.Application.Validators.Artist;
+using ArtistPlatform.Application.Validators.Album;
+using ArtistPlatform.Application.Validators.Track;
+using ArtistPlatform.Application.DTOs.PostDTOs;
+using ArtistPlatform.Application.Validators.Post;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateArtistRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateArtistRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateAlbumRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateAlbumRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTrackRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateTrackRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreatePostRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdatePostRequestValidator>();
 
 builder.Services.AddSwaggerGen(options =>
 {
