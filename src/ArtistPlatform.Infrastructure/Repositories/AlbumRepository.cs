@@ -13,6 +13,11 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<bool> ExistsByTitleAsync(string title)
+        {
+            return await _context.Albums.AnyAsync(a => a.Title == title);
+        }
+
         public async Task AddAlbumAsync(Album album)
         {
             await _context.Albums.AddAsync(album);

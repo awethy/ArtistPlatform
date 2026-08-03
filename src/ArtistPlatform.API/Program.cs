@@ -1,17 +1,16 @@
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Application.Services;
+using ArtistPlatform.Application.Validators.Album;
+using ArtistPlatform.Application.Validators.Artist;
+using ArtistPlatform.Application.Validators.Post;
+using ArtistPlatform.Application.Validators.Track;
 using ArtistPlatform.Domain.Interfaces;
 using ArtistPlatform.Infrastructure.Persistence;
 using ArtistPlatform.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using ArtistPlatform.Application.Validators.Artist;
-using ArtistPlatform.Application.Validators.Album;
-using ArtistPlatform.Application.Validators.Track;
-using ArtistPlatform.Application.DTOs.PostDTOs;
-using ArtistPlatform.Application.Validators.Post;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

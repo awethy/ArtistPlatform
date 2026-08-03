@@ -14,6 +14,11 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<bool> ExistsByTitleAsync(string title)
+        {
+            return await _context.Posts.AnyAsync(p => p.Title == title);
+        }
+
         public async Task AddAsync(Post post)
         {
             await _context.Posts.AddAsync(post);
@@ -37,7 +42,7 @@ namespace ArtistPlatform.Infrastructure.Repositories
             return await _context.Posts.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserIdAsync(Guid id)
+        public async Task<IEnumerable<Post>> GetPostsByArtistIdAsync(Guid id)
         {
             return await _context.Posts.Where(p => p.ArtistId == id).ToListAsync();
         }

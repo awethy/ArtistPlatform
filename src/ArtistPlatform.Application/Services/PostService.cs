@@ -1,4 +1,5 @@
 ﻿using ArtistPlatform.Application.DTOs.PostDTOs;
+using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
 using ArtistPlatform.Domain.Interfaces;
@@ -16,6 +17,11 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<PostResponse> CreatePostAsync(CreatePostRequest request)
         {
+            if (await _postRepository.ExistsByTitleAsync(request.Title))
+            {
+                throw new ConflictException("A post with the same title already exists for this artist.");
+            }
+
             var post = new Post(
                 request.Title,
                 request.Content,
@@ -35,6 +41,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task DeletePostAsync(Guid postId)
         {
+            var post = await _postRepository.GetByIdAsync(postId)
+                ?? throw new NotFoundExceptions("Post", postId);
             await _postRepository.DeleteAsync(postId);
         }
 
@@ -53,7 +61,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<PostResponse> GetPostByIdAsync(Guid postId)
         {
-            var post = await _postRepository.GetByIdAsync(postId);
+            var post = await _postRepository.GetByIdAsync(postId)
+                ?? throw new NotFoundExceptions("Post", postId);
             return new PostResponse
             {
                 Id = post.Id,
@@ -66,7 +75,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<IEnumerable<PostResponse>> GetPostsByArtistIdAsync(Guid artistId)
         {
-            var posts = await _postRepository.GetPostsByUserIdAsync(artistId);
+            var posts = await _postRepository.GetPostsByArtistIdAsync(artistId)
+                ?? throw new NotFoundExceptions("Artist", artistId);
             return posts.Select(post => new PostResponse
             {
                 Id = post.Id,
@@ -79,10 +89,12 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<PostResponse> UpdatePostAsync(Guid postId, UpdatePostRequest request)
         {
-            var post = await _postRepository.GetByIdAsync(postId);
-            if (post == null) 
+            var post = await _postRepository.GetByIdAsync(postId)
+                ?? throw new NotFoundExceptions("Post", postId);
+
+            if (post.Title != request.Title && await _postRepository.ExistsByTitleAsync(request.Title))
             {
-                throw new ArgumentNullException(nameof(post));
+                throw new ConflictException("A post with the same title already exists for this artist.");
             }
 
             post.Update(request.Title, request.Content);

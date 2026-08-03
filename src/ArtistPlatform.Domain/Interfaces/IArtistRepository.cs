@@ -4,6 +4,7 @@ namespace ArtistPlatform.Domain.Interfaces
 {
     public interface IArtistRepository
     {
+        Task<bool> ExistsByNameAsync(string name);
         Task<List<Artist>> GetAllAsync();
         Task<Artist?> GetByIdAsync(Guid id);
         Task AddAsync(Artist artist);

@@ -1,4 +1,5 @@
 ﻿using ArtistPlatform.Application.DTOs.AlbumDTOs;
+using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
 using ArtistPlatform.Domain.Interfaces;
@@ -16,6 +17,11 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<AlbumResponse> AddAlbumAsync(CreateAlbumRequest request)
         {
+            if (await _albumRepository.ExistsByTitleAsync(request.Title))
+            {
+                throw new ConflictException($"An album with the title '{request.Title}' already exists.");
+            }
+
             var album = new Album(
                 request.Title,
                 request.CoverUrl,
@@ -36,12 +42,15 @@ namespace ArtistPlatform.Application.Services
 
         public async Task DeleteAlbumAsync(Guid id)
         {
+            var album = await _albumRepository.GetAlbumByIdAsync(id)
+                ?? throw new NotFoundExceptions("Album", id);
             await _albumRepository.DeleteAlbumAsync(id);
         }
 
         public async Task<AlbumResponse?> GetAlbumByIdAsync(Guid id)
         {
-            var albums = await _albumRepository.GetAlbumByIdAsync(id);
+            var albums = await _albumRepository.GetAlbumByIdAsync(id)
+                ?? throw new NotFoundExceptions("Album", id);
             return albums == null ? null : new AlbumResponse
             {
                 Id = albums.Id,
@@ -54,7 +63,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<IEnumerable<AlbumResponse?>> GetAlbumsByArtistIdAsync(Guid artistId)
         {
-            var albums = await _albumRepository.GetAlbumsByArtistIdAsync(artistId);
+            var albums = await _albumRepository.GetAlbumsByArtistIdAsync(artistId)
+                ?? throw new NotFoundExceptions("Artist", artistId);
             return albums.Select(album => new AlbumResponse
             {
                 Id = album.Id,
@@ -80,10 +90,12 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<AlbumResponse> UpdateAlbumAsync(Guid id, UpdateAlbumRequest request)
         {
-            var album = await _albumRepository.GetAlbumByIdAsync(id);
-            if (album == null)
+            var album = await _albumRepository.GetAlbumByIdAsync(id)
+                ?? throw new NotFoundExceptions("Album", id);
+
+            if (album.Title != request.Title && await _albumRepository.ExistsByTitleAsync(request.Title))
             {
-                throw new KeyNotFoundException($"Album with id {id} not found.");
+                throw new ConflictException($"An album with the title '{request.Title}' already exists.");
             }
 
             album.Update(request.Title, request.CoverUrl, request.ReleaseDate);

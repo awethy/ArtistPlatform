@@ -14,6 +14,11 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<bool> ExistsAsync(string title, Guid albumId, Guid artistId)
+        {
+            return await _context.Tracks.AnyAsync(t => t.Title == title && t.AlbumId == albumId && t.ArtistId == artistId);
+        }
+
         public async Task AddAsync(Track track)
         {
             await _context.Tracks.AddAsync(track);

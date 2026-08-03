@@ -5,6 +5,7 @@ namespace ArtistPlatform.Domain.Interfaces
 {
     public interface ITrackRepository
     {
+        Task<bool> ExistsAsync(string title, Guid albumId, Guid artistId);
         Task<List<Track>> GetAllTracksAsync();
         Task<List<Track>> GetTracksByAlbumIdAsync(Guid albumId);
         Task<List<Track>> GetTracksByArtistIdAsync(Guid artistId);

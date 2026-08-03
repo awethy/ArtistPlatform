@@ -1,4 +1,5 @@
 ﻿using ArtistPlatform.Application.DTOs.TrackDTOs;
+using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
 using ArtistPlatform.Domain.Interfaces;
@@ -16,6 +17,11 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<TrackResponse> CreateTrackAsync(CreateTrackRequest trackRequest)
         {
+            if (await _trackRepository.ExistsAsync(trackRequest.Title, trackRequest.AlbumId, trackRequest.ArtistId))
+            {
+                throw new ConflictException("A track with the same title already exists for this album and artist.");
+            }
+
             var track = new Track(
                 trackRequest.Title, 
                 trackRequest.Duration, 
@@ -38,6 +44,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task DeleteTrackAsync(Guid id)
         {
+            var track = await _trackRepository.GetByIdAsync(id)
+                ?? throw new NotFoundExceptions("Track", id);
             await _trackRepository.DeleteAsync(id);
         }
 
@@ -57,11 +65,9 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<TrackResponse?> GetTrackByIdAsync(Guid id)
         {
-            var track = await _trackRepository.GetByIdAsync(id);
-            if (track == null)
-            {
-                return null;
-            }
+            var track = await _trackRepository.GetByIdAsync(id)
+                ?? throw new NotFoundExceptions("Track", id);
+
             return new TrackResponse
             {
                 Id = track.Id,
@@ -75,7 +81,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<List<TrackResponse>> GetTracksByAlbumIdAsync(Guid albumId)
         {
-            var tracks = await _trackRepository.GetTracksByAlbumIdAsync(albumId);
+            var tracks = await _trackRepository.GetTracksByAlbumIdAsync(albumId)
+                ?? throw new NotFoundExceptions("Album", albumId);
             return tracks.Select(track => new TrackResponse
             {
                 Id = track.Id,
@@ -89,7 +96,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<List<TrackResponse>> GetTracksByArtistIdAsync(Guid artistId)
         {
-            var tracks = await _trackRepository.GetTracksByArtistIdAsync(artistId);
+            var tracks = await _trackRepository.GetTracksByArtistIdAsync(artistId)
+                ?? throw new NotFoundExceptions("Artist", artistId);
             return tracks.Select(track => new TrackResponse
             {
                 Id = track.Id,
@@ -103,10 +111,12 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<TrackResponse?> UpdateTrackAsync(Guid id, UpdateTrackRequest trackRequest)
         {
-            var track = await _trackRepository.GetByIdAsync(id);
-            if (track == null)
+            var track = await _trackRepository.GetByIdAsync(id)
+                ?? throw new NotFoundExceptions("Track", id);
+
+            if (track.Title != trackRequest.Title && await _trackRepository.ExistsAsync(trackRequest.Title, track.AlbumId, track.ArtistId))
             {
-                return null;
+                throw new ConflictException("A track with the same title already exists for this album and artist.");
             }
 
             track.Update(trackRequest.Title, trackRequest.Duration, trackRequest.AudioUrl);
