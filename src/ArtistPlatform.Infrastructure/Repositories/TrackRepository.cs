@@ -14,6 +14,21 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Tracks.CountAsync();
+        }
+
+        public async Task<List<Track>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _context.Tracks
+                .AsNoTracking()
+                .OrderBy(t => t.AlbumId)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<bool> ExistsAsync(string title, Guid albumId, Guid artistId)
         {
             return await _context.Tracks.AnyAsync(t => t.Title == title && t.AlbumId == albumId && t.ArtistId == artistId);

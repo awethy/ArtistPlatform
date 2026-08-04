@@ -14,6 +14,21 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Posts.CountAsync();
+        }
+
+        public async Task<List<Post>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _context.Posts
+                .AsNoTracking()
+                .OrderBy(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<bool> ExistsByTitleAsync(string title)
         {
             return await _context.Posts.AnyAsync(p => p.Title == title);

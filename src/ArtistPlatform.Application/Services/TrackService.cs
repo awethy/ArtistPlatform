@@ -1,4 +1,5 @@
-﻿using ArtistPlatform.Application.DTOs.TrackDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.TrackDTOs;
 using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
@@ -13,6 +14,29 @@ namespace ArtistPlatform.Application.Services
         public TrackService(ITrackRepository trackRepository)
         {
             _trackRepository = trackRepository;
+        }
+
+        public async Task<PagedResult<TrackResponse>> GetPagedTracksAsync(int page, int pageSize)
+        {
+            var totalCount = await _trackRepository.GetTotalCountAsync();
+            var tracks = await _trackRepository.GetPagedAsync(page, pageSize);
+            var trackResponses = tracks.Select(track => new TrackResponse
+            {
+                Id = track.Id,
+                Title = track.Title,
+                Duration = track.Duration,
+                AudioUrl = track.AudioUrl,
+                AlbumId = track.AlbumId,
+                ArtistId = track.ArtistId
+            }).ToList();
+
+            return new PagedResult<TrackResponse>
+            {
+                Items = trackResponses,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public async Task<TrackResponse> CreateTrackAsync(CreateTrackRequest trackRequest)

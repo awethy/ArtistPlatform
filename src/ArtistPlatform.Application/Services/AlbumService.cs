@@ -1,4 +1,5 @@
-﻿using ArtistPlatform.Application.DTOs.AlbumDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.AlbumDTOs;
 using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
@@ -13,6 +14,28 @@ namespace ArtistPlatform.Application.Services
         public AlbumService(IAlbumRepository albumRepository)
         {
             _albumRepository = albumRepository;
+        }
+
+        public async Task<PagedResult<AlbumResponse>> GetPagedAlbumsAsync(PaginationRequest request)
+        {
+            var totalCount = await _albumRepository.GetTotalCountAsync();
+            var albums = await _albumRepository.GetPagedAsync(request.Page, request.PageSize);
+            var albumResponses = albums.Select(album => new AlbumResponse
+            {
+                Id = album.Id,
+                Title = album.Title,
+                CoverUrl = album.CoverUrl,
+                ReleaseDate = album.ReleaseDate,
+                ArtistId = album.ArtistId
+            }).ToList();
+
+            return new PagedResult<AlbumResponse>
+            {
+                Items = albumResponses,
+                TotalCount = totalCount,
+                Page = request.Page,
+                PageSize = request.PageSize
+            };
         }
 
         public async Task<AlbumResponse> AddAlbumAsync(CreateAlbumRequest request)

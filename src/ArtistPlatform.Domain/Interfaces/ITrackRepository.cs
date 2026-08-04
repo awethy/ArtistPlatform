@@ -1,10 +1,12 @@
 ﻿using ArtistPlatform.Domain.Entities;
-using NpgsqlTypes;
 
 namespace ArtistPlatform.Domain.Interfaces
 {
     public interface ITrackRepository
     {
+        Task<List<Track>> GetPagedAsync(int page, int pageSize);
+        Task<int> GetTotalCountAsync();
+
         Task<bool> ExistsAsync(string title, Guid albumId, Guid artistId);
         Task<List<Track>> GetAllTracksAsync();
         Task<List<Track>> GetTracksByAlbumIdAsync(Guid albumId);

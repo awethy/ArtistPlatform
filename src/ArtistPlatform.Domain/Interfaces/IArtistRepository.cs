@@ -4,6 +4,9 @@ namespace ArtistPlatform.Domain.Interfaces
 {
     public interface IArtistRepository
     {
+        Task<List<Artist>> GetPagedAsync(int page, int pageSize);
+        Task<int> GetTotalCountAsync();
+
         Task<bool> ExistsByNameAsync(string name);
         Task<List<Artist>> GetAllAsync();
         Task<Artist?> GetByIdAsync(Guid id);

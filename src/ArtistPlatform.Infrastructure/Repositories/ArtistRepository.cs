@@ -14,6 +14,21 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<List<Artist>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _context.Artists
+                .AsNoTracking()
+                .OrderBy(a => a.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Artists.CountAsync();
+        }
+
         public async Task<bool> ExistsByNameAsync(string name)
         {
             return await _context.Artists.AnyAsync(a => a.Name == name);

@@ -1,10 +1,13 @@
-﻿using ArtistPlatform.Application.DTOs.ArtistDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.ArtistDTOs;
 using ArtistPlatform.Domain.Entities;
 
 namespace ArtistPlatform.Application.Interfaces
 {
     public interface IArtistService
     {
+        Task<PagedResult<ArtistResponse>> GetPagedAsync(PaginationRequest request);
+
         Task<List<ArtistResponse>> GetAllAsync();
         Task<ArtistResponse> GetArtistByIdAsync(Guid id);
         Task<ArtistResponse> CreateArtistAsync(CreateArtistRequest artist);

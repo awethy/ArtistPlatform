@@ -8,7 +8,7 @@ namespace ArtistPlatform.Application.DTOs.ArtistDTOs
 {
     public class CreateArtistRequest
     {
-        public required string Name { get; set; }
+        public string Name { get; set; }
         public string Bio { get; set; }
     }
 }

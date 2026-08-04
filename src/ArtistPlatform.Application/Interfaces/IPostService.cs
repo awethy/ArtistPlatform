@@ -1,9 +1,12 @@
-﻿using ArtistPlatform.Application.DTOs.PostDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.PostDTOs;
 
 namespace ArtistPlatform.Application.Interfaces
 {
     public interface IPostService
     {
+        Task<PagedResult<PostResponse>> GetPagedPostsAsync(PaginationRequest request);
+
         Task<PostResponse> CreatePostAsync(CreatePostRequest request);
         Task<PostResponse> GetPostByIdAsync(Guid postId);
         Task<IEnumerable<PostResponse>> GetAllPostsAsync();

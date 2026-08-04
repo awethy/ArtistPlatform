@@ -1,9 +1,12 @@
-﻿using ArtistPlatform.Application.DTOs.AlbumDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.AlbumDTOs;
 
 namespace ArtistPlatform.Application.Interfaces
 {
     public interface IAlbumService
     {
+        Task<PagedResult<AlbumResponse>> GetPagedAlbumsAsync(PaginationRequest request);
+
         public Task<IEnumerable<AlbumResponse>> GetAllAlbumsAsync();
         public Task<AlbumResponse?> GetAlbumByIdAsync(Guid id);
         public Task<IEnumerable<AlbumResponse?>> GetAlbumsByArtistIdAsync(Guid artistId);

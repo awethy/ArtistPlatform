@@ -1,4 +1,5 @@
-﻿using ArtistPlatform.Application.DTOs.PostDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.PostDTOs;
 using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
@@ -13,6 +14,28 @@ namespace ArtistPlatform.Application.Services
         public PostService(IPostRepository postRepository)
         {
             _postRepository = postRepository;
+        }
+
+        public async Task<PagedResult<PostResponse>> GetPagedPostsAsync(PaginationRequest request)
+        {
+            var totalCount = await _postRepository.GetTotalCountAsync();
+            var posts = await _postRepository.GetPagedAsync(request.Page, request.PageSize);
+            var postResponses = posts.Select(post => new PostResponse
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                CreatedAt = post.CreatedAt,
+                ArtistId = post.ArtistId
+            }).ToList();
+
+            return new PagedResult<PostResponse>
+            {
+                Items = postResponses,
+                TotalCount = totalCount,
+                Page = request.Page,
+                PageSize = request.PageSize
+            };
         }
 
         public async Task<PostResponse> CreatePostAsync(CreatePostRequest request)

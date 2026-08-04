@@ -1,4 +1,5 @@
-﻿using ArtistPlatform.Application.Interfaces;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArtistPlatform.API.Controllers
@@ -18,6 +19,13 @@ namespace ArtistPlatform.API.Controllers
         public async Task<IActionResult> GetAllAlbumsAsync()
         {
             return Ok(await _albumService.GetAllAlbumsAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPagedAlbumsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var request = new PaginationRequest { Page = page, PageSize = pageSize };
+            return Ok(await _albumService.GetPagedAlbumsAsync(request));
         }
     }
 }

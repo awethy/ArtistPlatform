@@ -1,9 +1,11 @@
-﻿using ArtistPlatform.Application.DTOs.TrackDTOs;
+﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.TrackDTOs;
 
 namespace ArtistPlatform.Application.Interfaces
 {
     public interface ITrackService
     {
+        Task<PagedResult<TrackResponse>> GetPagedTracksAsync(PaginationRequest request);
         Task<List<TrackResponse>> GetAllTracksAsync();
         Task<List<TrackResponse>> GetTracksByAlbumIdAsync(Guid albumId);
         Task<List<TrackResponse>> GetTracksByArtistIdAsync(Guid artistId);
