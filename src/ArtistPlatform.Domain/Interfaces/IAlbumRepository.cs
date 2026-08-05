@@ -4,8 +4,8 @@ namespace ArtistPlatform.Domain.Interfaces
 {
     public interface IAlbumRepository
     {
-        Task<List<Album>> GetPagedAsync(int page, int pageSize);
-        Task<int> GetTotalCountAsync();
+        Task<List<Album>> GetPagedAsync(int page, int pageSize, string? searchTerm, string? sortBy, bool descending);
+        Task<int> GetTotalCountAsync(string? searchTerm);
 
         Task<bool> ExistsByTitleAsync(string title);
         public Task<IEnumerable<Album>> GetAllAlbumsAsync();

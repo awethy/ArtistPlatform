@@ -13,16 +13,35 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<int> GetTotalCountAsync()
+        public async Task<int> GetTotalCountAsync(string? searchTerm)
         {
-            return await _context.Albums.CountAsync();
+            var query = _context.Albums.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(a => a.Title.Contains(searchTerm));
+            }
+
+            return await query.CountAsync();
         }
 
-        public async Task<List<Album>> GetPagedAsync(int page, int pageSize)
+        public async Task<List<Album>> GetPagedAsync(int page, int pageSize, string? searchTerm, string? sortBy, bool descending)
         {
-            return await _context.Albums
-                .AsNoTracking()
-                .OrderBy(a => a.ReleaseDate)
+            var query = _context.Albums.AsNoTracking();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(a => a.Title.Contains(searchTerm));
+            }
+
+            query = sortBy?.ToLower() switch
+            {
+                "title" => descending ? query.OrderByDescending(a => a.Title) : query.OrderBy(a => a.Title),
+                "releasedate" => descending ? query.OrderByDescending(a => a.ReleaseDate) : query.OrderBy(a => a.ReleaseDate),
+                _ => query.OrderBy(a => a.ReleaseDate)
+            };
+
+            return await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

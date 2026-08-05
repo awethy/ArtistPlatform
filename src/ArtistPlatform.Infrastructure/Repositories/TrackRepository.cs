@@ -14,16 +14,37 @@ namespace ArtistPlatform.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<int> GetTotalCountAsync()
+        public async Task<int> GetTotalCountAsync(string? searchTerm)
         {
-            return await _context.Tracks.CountAsync();
+            var query = _context.Tracks.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(t => t.Title.Contains(searchTerm));
+            }
+
+            return await query.CountAsync();
         }
 
-        public async Task<List<Track>> GetPagedAsync(int page, int pageSize)
+        public async Task<List<Track>> GetPagedAsync(int page, int pageSize, string? searchTerm, string? sortBy, bool descending)
         {
-            return await _context.Tracks
-                .AsNoTracking()
-                .OrderBy(t => t.AlbumId)
+            var query = _context.Tracks.AsNoTracking();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(t => t.Title.Contains(searchTerm));
+            }
+
+            query = sortBy?.ToLower() switch
+            {
+                "title" => descending ? query.OrderByDescending(t => t.Title) : query.OrderBy(t => t.Title),
+                "albumid" => descending ? query.OrderByDescending(t => t.AlbumId) : query.OrderBy(t => t.AlbumId),
+                "artistid" => descending ? query.OrderByDescending(t => t.ArtistId) : query.OrderBy(t => t.ArtistId),
+                "releaseDate" => descending ? query.OrderByDescending(t => t.Album.ReleaseDate) : query.OrderBy(t => t.Album.ReleaseDate),
+                _ => query.OrderBy(t => t.AlbumId)
+            };
+
+            return await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

@@ -18,8 +18,8 @@ namespace ArtistPlatform.Application.Services
 
         public async Task<PagedResult<ArtistResponse>> GetPagedAsync(PaginationRequest request)
         {
-            var totalCount = await _artistRepository.GetTotalCountAsync();
-            var artists = await _artistRepository.GetPagedAsync(request.Page, request.PageSize);
+            var totalCount = await _artistRepository.GetTotalCountAsync(request.SearchTerm);
+            var artists = await _artistRepository.GetPagedAsync(request.Page, request.PageSize, request.SearchTerm, request.SortBy, request.Descending);
             var artistResponses = artists.Select(artist => new ArtistResponse
             {
                 Id = artist.Id,

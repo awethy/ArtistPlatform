@@ -4,8 +4,8 @@ namespace ArtistPlatform.Domain.Interfaces
 {
     public interface ITrackRepository
     {
-        Task<List<Track>> GetPagedAsync(int page, int pageSize);
-        Task<int> GetTotalCountAsync();
+        Task<List<Track>> GetPagedAsync(int page, int pageSize, string? searchTerm, string? sortBy, bool descending);
+        Task<int> GetTotalCountAsync(string? searchTerm);
 
         Task<bool> ExistsAsync(string title, Guid albumId, Guid artistId);
         Task<List<Track>> GetAllTracksAsync();

@@ -16,10 +16,10 @@ namespace ArtistPlatform.Application.Services
             _trackRepository = trackRepository;
         }
 
-        public async Task<PagedResult<TrackResponse>> GetPagedTracksAsync(int page, int pageSize)
+        public async Task<PagedResult<TrackResponse>> GetPagedTracksAsync(PaginationRequest request)
         {
-            var totalCount = await _trackRepository.GetTotalCountAsync();
-            var tracks = await _trackRepository.GetPagedAsync(page, pageSize);
+            var totalCount = await _trackRepository.GetTotalCountAsync(request.SearchTerm);
+            var tracks = await _trackRepository.GetPagedAsync(request.Page, request.PageSize, request.SearchTerm, request.SortBy, request.Descending);
             var trackResponses = tracks.Select(track => new TrackResponse
             {
                 Id = track.Id,
@@ -34,8 +34,8 @@ namespace ArtistPlatform.Application.Services
             {
                 Items = trackResponses,
                 TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
+                Page = request.Page,
+                PageSize = request.PageSize 
             };
         }
 
