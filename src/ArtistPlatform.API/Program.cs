@@ -1,4 +1,5 @@
 using ArtistPlatform.Application.Interfaces;
+using ArtistPlatform.Application.Interfaces.Security;
 using ArtistPlatform.Application.Services;
 using ArtistPlatform.Application.Validators.Album;
 using ArtistPlatform.Application.Validators.Artist;
@@ -49,6 +50,11 @@ builder.Services.AddScoped<IAlbumService, AlbumService>();
 
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<ITrackService, TrackService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService,  AuthService>();
+
+builder.Services.AddScoped<IPasswordHasherService, IPasswordHasherService>();
 
 var app = builder.Build();
 

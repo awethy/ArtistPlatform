@@ -24,14 +24,12 @@ namespace ArtistPlatform.Infrastructure.Migrations
 
             modelBuilder.Entity("ArtistPlatform.Domain.Entities.Album", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArtistId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ArtistId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CoverUrl")
                         .IsRequired()
@@ -53,11 +51,9 @@ namespace ArtistPlatform.Infrastructure.Migrations
 
             modelBuilder.Entity("ArtistPlatform.Domain.Entities.Artist", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -77,14 +73,12 @@ namespace ArtistPlatform.Infrastructure.Migrations
 
             modelBuilder.Entity("ArtistPlatform.Domain.Entities.Post", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArtistId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ArtistId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -106,14 +100,15 @@ namespace ArtistPlatform.Infrastructure.Migrations
 
             modelBuilder.Entity("ArtistPlatform.Domain.Entities.Track", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("AlbumId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("AlbumId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ArtistId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AudioUrl")
                         .IsRequired()
@@ -130,16 +125,16 @@ namespace ArtistPlatform.Infrastructure.Migrations
 
                     b.HasIndex("AlbumId");
 
+                    b.HasIndex("ArtistId");
+
                     b.ToTable("Tracks");
                 });
 
             modelBuilder.Entity("ArtistPlatform.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -151,6 +146,9 @@ namespace ArtistPlatform.Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -191,7 +189,15 @@ namespace ArtistPlatform.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ArtistPlatform.Domain.Entities.Artist", "Artist")
+                        .WithMany()
+                        .HasForeignKey("ArtistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Album");
+
+                    b.Navigation("Artist");
                 });
 #pragma warning restore 612, 618
         }
