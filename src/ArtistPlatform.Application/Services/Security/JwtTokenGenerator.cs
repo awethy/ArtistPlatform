@@ -39,7 +39,7 @@ namespace ArtistPlatform.Application.Services.Security
                     issuer: _jwtOptions.Issuer,
                     audience: _jwtOptions.Audience,
                     claims: claim,
-                    expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationsMinutes),
+                    expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationMinutes),
                     signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
