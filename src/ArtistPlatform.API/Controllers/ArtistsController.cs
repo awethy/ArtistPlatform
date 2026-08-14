@@ -16,13 +16,6 @@ namespace ArtistPlatform.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            // Implementation for getting all artists
-            return Ok(await _artistService.GetAllAsync());
-        }
-
-        [HttpGet]
         public async Task<IActionResult> GetPagedAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             // Implementation for getting paged artists

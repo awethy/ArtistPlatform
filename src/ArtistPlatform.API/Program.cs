@@ -1,6 +1,9 @@
+using ArtistPlatform.API.Middleware;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Application.Interfaces.Security;
+using ArtistPlatform.Application.Options;
 using ArtistPlatform.Application.Services;
+using ArtistPlatform.Application.Services.Security;
 using ArtistPlatform.Application.Validators.Album;
 using ArtistPlatform.Application.Validators.Artist;
 using ArtistPlatform.Application.Validators.Post;
@@ -51,10 +54,18 @@ builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<ITrackService, TrackService>();
 
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService,  AuthService>();
 
-builder.Services.AddScoped<IPasswordHasherService, IPasswordHasherService>();
+builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+
+builder.Services.AddScoped<IJwtTokenGenerator, IJwtTokenGenerator>();
+
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
 
@@ -63,6 +74,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -31,6 +31,7 @@ namespace ArtistPlatform.API.Middleware
                 NotFoundExceptions => StatusCodes.Status404NotFound,
                 ValidationExceptions => StatusCodes.Status400BadRequest,
                 ConflictException => StatusCodes.Status409Conflict,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
                 _ => StatusCodes.Status500InternalServerError
             };
             var result = new

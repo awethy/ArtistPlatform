@@ -12,5 +12,12 @@ namespace ArtistPlatform.Application.Services.Security
         {
             return _passwordHasher.HashPassword(user, password);
         }
+
+        public bool VerifyPassword(User user, string hashedPassword, string providedPassword)
+        {
+            var result = _passwordHasher.VerifyHashedPassword(user, hashedPassword, providedPassword);
+
+            return result == PasswordVerificationResult.Success;
+        }
     }
 }

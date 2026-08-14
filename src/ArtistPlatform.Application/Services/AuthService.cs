@@ -11,16 +11,36 @@ namespace ArtistPlatform.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _hasherService;
+        private readonly IJwtTokenGenerator _tokenGenerator;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasherService hasherService)
+        public AuthService(IUserRepository userRepository, IPasswordHasherService hasherService, IJwtTokenGenerator tokenGenerator)
         {
             _userRepository = userRepository;
             _hasherService = hasherService;
+            _tokenGenerator = tokenGenerator;
         }
 
-        public Task<AuthResponse> Login(LoginRequest request)
+        public async Task<AuthResponse> Login(LoginRequest request)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByUsernameAsync(request.Username);
+
+            if (user == null)
+            {
+                throw new UnauthorizedException("Invalid email or password.");
+            }
+
+            if (!_hasherService.VerifyPassword(user, user.PasswordHash, request.Password))
+            {
+                throw new UnauthorizedException("Invalid email or password.");
+            }
+
+            var token = _tokenGenerator.GenerateToken(user);
+
+            return new AuthResponse
+            {
+                Token = token,
+                Role = user.Role.ToString(),
+            };
         }
 
         public async Task<AuthResponse> Register(RegisterRequest request)
@@ -48,7 +68,7 @@ namespace ArtistPlatform.Application.Services
 
             return new AuthResponse
             {
-                Message = "User registered successfully."
+
             };
         }
     }

@@ -15,10 +15,18 @@ namespace ArtistPlatform.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var response = await _authService.Register(request);
+
+            return Ok(response);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest request)
+        {
+            var response = await _authService.Login(request);
 
             return Ok(response);
         }

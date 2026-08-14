@@ -32,7 +32,7 @@ namespace ArtistPlatform.Infrastructure.Repositories
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _context.Users.FindAsync(email);
+            return await _context.Users.FirstOrDefaultAsync(e => e.Email == email);
         }
 
         public async Task<User?> GetByIdAsync(Guid id)
@@ -42,7 +42,7 @@ namespace ArtistPlatform.Infrastructure.Repositories
 
         public async Task<User?> GetByUsernameAsync(string username)
         {
-            return await _context.Users.FindAsync(username);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task UpdateAsync(User user)
