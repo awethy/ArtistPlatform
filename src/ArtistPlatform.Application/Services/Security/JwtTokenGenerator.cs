@@ -1,6 +1,7 @@
 ﻿using ArtistPlatform.Application.Interfaces.Security;
 using ArtistPlatform.Application.Options;
 using ArtistPlatform.Domain.Entities;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,9 +13,9 @@ namespace ArtistPlatform.Application.Services.Security
     {
         private readonly JwtOptions _jwtOptions;
 
-        public JwtTokenGenerator()
+        public JwtTokenGenerator(IOptions<JwtOptions> options)
         {
-                _jwtOptions = new JwtOptions();
+                _jwtOptions = options.Value;
         }
 
         public string GenerateToken(User user)

@@ -26,12 +26,12 @@ namespace ArtistPlatform.Application.Services
 
             if (user == null)
             {
-                throw new UnauthorizedException("Invalid email or password.");
+                throw new UnauthorizedException("Invalid username or password.");
             }
 
             if (!_hasherService.VerifyPassword(user, user.PasswordHash, request.Password))
             {
-                throw new UnauthorizedException("Invalid email or password.");
+                throw new UnauthorizedException("Invalid username or password.");
             }
 
             var token = _tokenGenerator.GenerateToken(user);
@@ -66,9 +66,12 @@ namespace ArtistPlatform.Application.Services
 
             await _userRepository.AddAsync(user);
 
+            var token = _tokenGenerator.GenerateToken(user);
+
             return new AuthResponse
             {
-
+                Token = token,
+                Role = user.Role.ToString(),
             };
         }
     }
