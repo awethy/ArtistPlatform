@@ -10,5 +10,9 @@ namespace ArtistPlatform.Application.DTOs.ArtistDTOs
     {
         public string Name { get; set; }
         public string Bio { get; set; }
+        public string AvatarUrl { get; set; }
+        public string Genre { get; set; }
+        public string Country { get; set; }
+        public int FollowersCount { get; set; }
     }
 }

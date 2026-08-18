@@ -1,5 +1,7 @@
 ﻿using ArtistPlatform.Application.Common.Pagination;
+using ArtistPlatform.Application.DTOs.AlbumDTOs;
 using ArtistPlatform.Application.DTOs.ArtistDTOs;
+using ArtistPlatform.Application.DTOs.TrackDTOs;
 using ArtistPlatform.Application.Exceptions;
 using ArtistPlatform.Application.Interfaces;
 using ArtistPlatform.Domain.Entities;
@@ -25,7 +27,31 @@ namespace ArtistPlatform.Application.Services
                 Id = artist.Id,
                 Name = artist.Name,
                 Bio = artist.Bio,
-                CreatedAt = artist.CreatedAt
+                CreatedAt = artist.CreatedAt,
+                AvatarUrl = artist.AvatarUrl,
+                Genre = artist.Genre,
+                Country = artist.Country,
+                Albums = artist.Albums
+                    .Select(album => new AlbumResponse
+                    {
+                        Id = album.Id,
+                        Title = album.Title,
+                        CoverUrl = album.CoverUrl,
+                        ReleaseDate = album.ReleaseDate,
+                        ArtistId = album.ArtistId
+                    })
+                    .ToList(),
+                Tracks = artist.Tracks
+                    .Select(track => new TrackResponse
+                    {
+                        Id = track.Id,
+                        Title = track.Title,
+                        Duration = track.Duration,
+                        AudioUrl = track.AudioUrl,
+                        AlbumId = track.AlbumId,
+                        ArtistId = track.ArtistId
+                    })
+                    .ToList()
             }).ToList();
 
             return new PagedResult<ArtistResponse>
@@ -46,7 +72,10 @@ namespace ArtistPlatform.Application.Services
 
             var artist = new Artist(
                 request.Name,
-                request.Bio);
+                request.Bio,
+                request.AvatarUrl,
+                request.Genre,
+                request.Country);
 
             await _artistRepository.AddAsync(artist);
 
@@ -55,7 +84,31 @@ namespace ArtistPlatform.Application.Services
                 Id = artist.Id,
                 Name = artist.Name,
                 Bio = artist.Bio,
-                CreatedAt = artist.CreatedAt
+                CreatedAt = artist.CreatedAt,
+                AvatarUrl = artist.AvatarUrl,
+                Genre = artist.Genre,
+                Country = artist.Country,
+                Albums = artist.Albums
+                    .Select(album => new AlbumResponse
+                    {
+                        Id = album.Id,
+                        Title = album.Title,
+                        CoverUrl = album.CoverUrl,
+                        ReleaseDate = album.ReleaseDate,
+                        ArtistId = album.ArtistId
+                    })
+                    .ToList(),
+                Tracks = artist.Tracks
+                    .Select(track => new TrackResponse
+                    {
+                        Id = track.Id,
+                        Title = track.Title,
+                        Duration = track.Duration,
+                        AudioUrl = track.AudioUrl,
+                        AlbumId = track.AlbumId,
+                        ArtistId = track.ArtistId
+                    })
+                    .ToList()
             };
         }
 
@@ -75,7 +128,31 @@ namespace ArtistPlatform.Application.Services
                 Id = artist.Id,
                 Name = artist.Name,
                 Bio = artist.Bio,
-                CreatedAt = artist.CreatedAt
+                CreatedAt = artist.CreatedAt,
+                AvatarUrl = artist.AvatarUrl,
+                Genre = artist.Genre,
+                Country = artist.Country,
+                Albums = artist.Albums
+                    .Select(album => new AlbumResponse
+                    {
+                        Id = album.Id,
+                        Title = album.Title,
+                        CoverUrl = album.CoverUrl,
+                        ReleaseDate = album.ReleaseDate,
+                        ArtistId = album.ArtistId
+                    })
+                    .ToList(),
+                Tracks = artist.Tracks
+                    .Select(track => new TrackResponse
+                    {
+                        Id = track.Id,
+                        Title = track.Title,
+                        Duration = track.Duration,
+                        AudioUrl = track.AudioUrl,
+                        AlbumId = track.AlbumId,
+                        ArtistId = track.ArtistId
+                    })
+                    .ToList()
             }).ToList();
         }
 
@@ -88,7 +165,31 @@ namespace ArtistPlatform.Application.Services
                 Id = artist.Id,
                 Name = artist.Name,
                 Bio = artist.Bio,
-                CreatedAt = artist.CreatedAt
+                CreatedAt = artist.CreatedAt,
+                AvatarUrl = artist.AvatarUrl,
+                Genre = artist.Genre,
+                Country = artist.Country,
+                Albums = artist.Albums
+                    .Select(album => new AlbumResponse
+                    {
+                        Id = album.Id,
+                        Title = album.Title,
+                        CoverUrl = album.CoverUrl,
+                        ReleaseDate = album.ReleaseDate,
+                        ArtistId = album.ArtistId
+                    })
+                    .ToList(),
+                Tracks = artist.Tracks
+                    .Select(track => new TrackResponse
+                    {
+                        Id = track.Id,
+                        Title = track.Title,
+                        Duration = track.Duration,
+                        AudioUrl = track.AudioUrl,
+                        AlbumId = track.AlbumId,
+                        ArtistId = track.ArtistId
+                    })
+                    .ToList()
             };
         }
 
@@ -102,7 +203,7 @@ namespace ArtistPlatform.Application.Services
                 throw new ConflictException($"Artist with name '{request.Name}' already exists.");
             }
 
-            artist.Update(request.Name, request.Bio);
+            artist.Update(request.Name, request.Bio, request.AvatarUrl, request.Genre, request.Country);
 
             await _artistRepository.UpdateAsync(artist);
 
@@ -111,7 +212,31 @@ namespace ArtistPlatform.Application.Services
                 Id = artist.Id,
                 Name = artist.Name,
                 Bio = artist.Bio,
-                CreatedAt = artist.CreatedAt
+                CreatedAt = artist.CreatedAt,
+                AvatarUrl = artist.AvatarUrl,
+                Genre = artist.Genre,
+                Country = artist.Country,
+                Albums = artist.Albums
+                    .Select(album => new AlbumResponse
+                    {
+                        Id = album.Id,
+                        Title = album.Title,
+                        CoverUrl = album.CoverUrl,
+                        ReleaseDate = album.ReleaseDate,
+                        ArtistId = album.ArtistId
+                    })
+                    .ToList(),
+                Tracks = artist.Tracks
+                    .Select(track => new TrackResponse
+                    {
+                        Id = track.Id,
+                        Title = track.Title,
+                        Duration = track.Duration,
+                        AudioUrl = track.AudioUrl,
+                        AlbumId = track.AlbumId,
+                        ArtistId = track.ArtistId
+                    })
+                    .ToList()
             };
         }
     }

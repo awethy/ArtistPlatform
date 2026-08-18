@@ -13,5 +13,15 @@ namespace ArtistPlatform.Infrastructure.Persistence
         public DbSet<Track> Tracks { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Follow> Follows { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                typeof(ApplicationDbContext).Assembly
+            );
+        }
     }
 }

@@ -13,6 +13,9 @@ namespace ArtistPlatform.Domain.Entities
         public UserRole Role { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
+        public ICollection<Follow> Follows { get; private set; } = new List<Follow>();
+
+
         public User(string username, string email, string passwordHash)
         {
             Id = Guid.NewGuid();
